@@ -3,6 +3,7 @@ window.addEventListener("load", function() {
    let form = document.querySelector("form");
    let reqs = document.getElementById("faultyItems");
    let pilotReady = document.getElementById("pilotStatus");
+   let copilotReady = document.getElementById("copilotStatus")
    form.addEventListener("submit", function(event) {
       event.preventDefault();
       let pilotInput = document.querySelector("input[name=pilotName]");
@@ -10,21 +11,23 @@ window.addEventListener("load", function() {
       let fuelInput = document.querySelector("input[name=fuelLevel]");
       let massInput = document.querySelector("input[name=cargoMass]");
       let pilotValue = pilotInput.value;
+      let copilotValue = copilotInput.value;
       if (pilotInput.value === "" || copilotInput.value === "" || fuelInput.value === "" || massInput.value === "") {
          alert("All fields are required!");
-         event.preventDefault();
+         // event.preventDefault();
       } else if (!isNaN(pilotInput.value) || !isNaN(copilotInput.value)){
          alert("Make sure to enter valid information for each field!");
-         event.preventDefault();   
+         // event.preventDefault();   
       } else if (isNaN(fuelInput.value) || isNaN(massInput.value)) {
          alert("Make sure to enter valid information for each field!");
-         event.preventDefault();
+         // event.preventDefault();
       } else {
-         if (fds ) {
-
-         } else {
+         reqs.style.visibility = "visible";
          pilotReady.innerHTML = `${pilotValue} is ready for launch!`;
-         }
+         copilotReady.innerHTML = `${copilotValue} is ready for launch!`;
+         // if (fuelInput<10000) {
+
+         // }
       }
    });
 });
