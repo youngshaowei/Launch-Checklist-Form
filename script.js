@@ -2,8 +2,27 @@
 window.addEventListener("load", function() {
    let form = document.querySelector("form");
    let reqs = document.getElementById("faultyItems");
-   let pilotReady = document.getElementById("pilotStatus");
-   let copilotReady = document.getElementById("copilotStatus")
+   let pilotStatus = document.getElementById("pilotStatus");
+   let copilotStatus = document.getElementById("copilotStatus");
+   let fuelStatus = document.getElementById("fuelStatus");
+   let massStatus = document.getElementById("cargoStatus");
+   let launchStatus = document.getElementById("launchStatus");
+   fetch("https://handlers.education.launchcode.org/static/planets.json").then(function(response) {
+         response.json().then(function(json) {
+            const missionTarget = document.getElementById("missionTarget");
+            let randomTarget = Math.floor((Math.random()*json.length))
+               missionTarget.innerHTML = `
+                  <h2>Mission Destination</h2>
+                     <ol>
+                        <li>Name: ${json[randomTarget].name}</li>
+                        <li>Diameter: ${json[randomTarget].diameter}</li>
+                        <li>Star: ${json[randomTarget].star}</li>
+                        <li>Distance from Earth: ${json[randomTarget].distance}</li>
+                        <li>Number of Moons: ${json[randomTarget].moons}</li>
+                     </ol>
+                  <img src="${json[randomTarget].image}">`;
+         })
+      });
    form.addEventListener("submit", function(event) {
       event.preventDefault();
       let pilotInput = document.querySelector("input[name=pilotName]");
@@ -12,22 +31,38 @@ window.addEventListener("load", function() {
       let massInput = document.querySelector("input[name=cargoMass]");
       let pilotValue = pilotInput.value;
       let copilotValue = copilotInput.value;
+      let fuelValue = fuelInput.value;
+      let massValue = massInput.value;
+      
       if (pilotInput.value === "" || copilotInput.value === "" || fuelInput.value === "" || massInput.value === "") {
          alert("All fields are required!");
-         // event.preventDefault();
       } else if (!isNaN(pilotInput.value) || !isNaN(copilotInput.value)){
-         alert("Make sure to enter valid information for each field!");
-         // event.preventDefault();   
+         alert("Make sure to enter valid information for each field!");  
       } else if (isNaN(fuelInput.value) || isNaN(massInput.value)) {
          alert("Make sure to enter valid information for each field!");
-         // event.preventDefault();
       } else {
-         reqs.style.visibility = "visible";
-         pilotReady.innerHTML = `${pilotValue} is ready for launch!`;
-         copilotReady.innerHTML = `${copilotValue} is ready for launch!`;
-         // if (fuelInput<10000) {
-
-         // }
+         pilotStatus.innerHTML = `${pilotValue} is ready for launch!`;
+         copilotStatus.innerHTML = `${copilotValue} is ready for launch!`;
+         if (fuelValue<10000 && massValue<=10000) {
+            reqs.style.visibility = "visible";
+            launchStatus.innerHTML = `Shuttle not ready for launch.`;
+            launchStatus.style.color = 'red';
+            fuelStatus.innerHTML = "Fuel level too low for launch.";
+         } else if (fuelValue>=10000 && massValue>10000) {
+            reqs.style.visibility = "visible";
+            launchStatus.innerHTML = `Shuttle not ready for launch.`;
+            launchStatus.style.color = 'red';
+            massStatus.innerHTML = "Cargo mass too high for launch.";
+         } else if (fuelValue<10000 && massValue>10000) {
+            reqs.style.visibility = "visible";
+            launchStatus.innerHTML = `Shuttle not ready for launch.`;
+            launchStatus.style.color = 'red';
+            fuelStatus.innerHTML = "Fuel level too low for launch.";
+            massStatus.innerHTML = "Cargo mass too high for launch.";
+         } else {
+            launchStatus.innerHTML = "Shuttle is ready for launch.";
+            launchStatus.style.color = "green";
+         }
       }
    });
 });
